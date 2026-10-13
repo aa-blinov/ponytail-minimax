@@ -32,23 +32,36 @@ The plugin needs `node` on PATH for the hooks to run. Skills work without it.
 ## Use
 
 Ponytail is active for the whole session, root agent and delegated agents alike.
-Switch level — it takes effect on the next session or delegated task:
 
-```bash
-# lite | full (default) | ultra
-echo '{"level":"ultra"}' > ~/.minimax/v2/plugin-data/hooks/ponytail/config.json
+Switch level — takes effect immediately and persists for later sessions:
+
+```
+/ponytail lite      build what was asked, name the smaller option
+/ponytail           back to full (the default)
+/ponytail ultra     also question the request before building
+/ponytail off       stop following the rules
+/ponytail on        start again
 ```
 
-Turn it off without uninstalling:
+The level is written to the plugin's data directory, so a new session keeps it.
+`off` writes a `disabled` flag, which is also the kill switch to use by hand:
 
 ```bash
-touch ~/.minimax/v2/plugin-data/hooks/ponytail/disabled
+touch ~/.minimax/v2/plugin-data/hooks/ponytail/disabled   # off
+rm    ~/.minimax/v2/plugin-data/hooks/ponytail/disabled   # on
 ```
 
-Or just say "stop ponytail" / "normal mode" in the conversation.
+That directory is the runtime's own `PLUGIN_DATA` for this plugin — an internal
+layout that may move between runtime versions. Two upstream settings are also
+honoured, both lower priority than the switcher:
 
-That path is the runtime's own `PLUGIN_DATA` directory for this plugin. It is an
-internal layout and may move between runtime versions.
+```bash
+export PONYTAIL_DEFAULT_MODE=ultra            # env var, highest upstream priority
+echo '{"defaultMode":"lite"}' > ~/.config/ponytail/config.json
+```
+
+Resolution order: the `/ponytail` command > `PONYTAIL_DEFAULT_MODE` >
+`~/.config/ponytail/config.json` > `full`. Any of them may be `"off"`.
 
 ## Skills
 
@@ -65,12 +78,10 @@ inside the upstream skill files are Claude Code's and do not work here.
 | `ponytail:ponytail-gain` | Measured-impact scoreboard |
 | `ponytail:ponytail-help` | Quick reference |
 
-`ponytail:ponytail-help` is upstream's own card, kept verbatim, and two of its
-sections do not apply to this port: it documents the `PONYTAIL_DEFAULT_MODE`
-environment variable and `~/.config/ponytail/config.json`, neither of which this
-hook reads. Use the `PLUGIN_DATA/config.json` path above. It also tells you to
-update through Claude Code's marketplace, which does not exist here — pull from
-this repository instead.
+`ponytail:ponytail-help` is upstream's own card, kept verbatim, and its config
+section now describes this port correctly — the env var and the config file it
+documents are both read. Its update section still points at Claude Code's
+marketplace, which does not exist here: pull from this repository instead.
 
 `ponytail:ponytail-debt` and `ponytail:ponytail-gain` carry further upstream
 assumptions: debt expects a git repository, gain prints a Claude Code / Opus 5.5

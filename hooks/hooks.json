@@ -23,6 +23,18 @@
           }
         ]
       }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${PLUGIN_ROOT}/scripts/handle-prompt.mjs\"",
+            "commandWindows": "node \"${PLUGIN_ROOT}\\scripts\\handle-prompt.mjs\"",
+            "timeout": 5
+          }
+        ]
+      }
     ]
   }
 }
