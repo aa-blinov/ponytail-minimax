@@ -17,8 +17,9 @@ delegated tasks.
 ## Install
 
 ```bash
-git clone https://github.com/aa-blinov/ponytail-minimax.git
-cp -R ponytail-minimax ~/.minimax/plugins/ponytail
+git clone --depth 1 https://github.com/aa-blinov/ponytail-minimax.git
+mkdir -p ~/.minimax/plugins/ponytail
+rsync -a --exclude .git ponytail-minimax/ ~/.minimax/plugins/ponytail/
 ```
 
 MiniMax Code rescans local plugins automatically, and the hooks apply to the
@@ -28,6 +29,9 @@ plugin does not appear at all, load the `plugin-creator` skill and ask it to
 validate the package.
 
 The hooks need `node` on PATH. Skills work without it.
+
+An agent can do this on its own from the repository URL, as long as it copies
+the package contents rather than the clone itself.
 
 ## Use
 
