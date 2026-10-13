@@ -1,5 +1,8 @@
 #!/usr/bin/env node
-// SessionStart hook: injects the ponytail ruleset into the opening turn.
+// Rule-injection hook for SessionStart and SubagentStart.
+//
+// Echoes back hook_event_name so the same script serves both events. Both
+// accept hookSpecificOutput.additionalContext, so one script covers both.
 //
 // Kill switch: create an empty file named `disabled` under PLUGIN_DATA.
 // Level switch: write {"level":"lite"|"full"|"ultra"} to config.json there.
@@ -10,13 +13,13 @@ import { readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 
 const MAX_CONTEXT = 65536;
+const SUPPORTED = new Set(['SessionStart', 'SubagentStart']);
 
 function readStdin() {
-  // The runtime always sends one JSON object; draining it is polite but not required.
   try {
-    return readFileSync(0, 'utf8');
+    return JSON.parse(readFileSync(0, 'utf8'));
   } catch {
-    return '';
+    return {};
   }
 }
 
@@ -26,12 +29,16 @@ function stripFrontmatter(text) {
 }
 
 function main() {
-  readStdin();
+  const input = readStdin();
+
+  // Echo the active event so one script is valid for every event it serves.
+  const event = SUPPORTED.has(input?.hook_event_name)
+    ? input.hook_event_name
+    : 'SessionStart';
 
   const pluginRoot = process.env.PLUGIN_ROOT || process.env.MINIMAX_PLUGIN_ROOT;
   const pluginData = process.env.PLUGIN_DATA;
 
-  // Bail out silently if disabled or misconfigured.
   if (!pluginRoot) return;
   if (pluginData && existsSync(join(pluginData, 'disabled'))) return;
 
@@ -55,7 +62,8 @@ function main() {
     }
   }
 
-  const context = `Ponytail is active at level "${level}" for this session. Stay active until the user says "stop ponytail" or "normal mode".\n\n${body}`.slice(
+  const scope = event === 'SubagentStart' ? 'this delegated task' : 'this session';
+  const context = `Ponytail is active at level "${level}" for ${scope}. Stay active until the user says "stop ponytail" or "normal mode".\n\n${body}`.slice(
     0,
     MAX_CONTEXT,
   );
@@ -63,7 +71,7 @@ function main() {
   process.stdout.write(
     JSON.stringify({
       hookSpecificOutput: {
-        hookEventName: 'SessionStart',
+        hookEventName: event,
         additionalContext: context,
       },
     }),

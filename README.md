@@ -10,8 +10,9 @@ Upstream Ponytail injects its ruleset with Node.js lifecycle hooks written for
 Claude Code and Codex. Those hooks do not run under MiniMax Code, so there the
 skill only fires when you name it.
 
-This is the same six skills plus one MiniMax `SessionStart` hook, so the mode is
-actually **on** from the first turn.
+This is the same six skills plus two MiniMax hooks, `SessionStart` and
+`SubagentStart`, so the mode is actually **on** from the first turn — and stays on
+inside delegated tasks too.
 
 ## Install
 
@@ -23,7 +24,7 @@ cp -R ponytail-minimax ~/.minimax/plugins/ponytail
 MiniMax Code rescans local plugins automatically. No restart needed. If it does
 not show up, load the `plugin-creator` skill and ask it to validate the package.
 
-The plugin needs `node` on PATH for the hook to run. Skills work without it.
+The plugin needs `node` on PATH for the hooks to run. Skills work without it.
 
 ## Use
 

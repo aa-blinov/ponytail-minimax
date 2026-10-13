@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "name": "ponytail",
   "displayName": "Ponytail",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Lazy senior developer mode: the smallest change that fully solves the task. Injects the ruleset on session start and ships six on-demand skills.",
   "author": "aa-blinov",
   "icon": "icon.png",
