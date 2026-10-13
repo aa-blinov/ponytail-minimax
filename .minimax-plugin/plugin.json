@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "name": "ponytail",
+  "displayName": "Ponytail",
+  "version": "1.0.0",
+  "description": "Lazy senior developer mode: the smallest change that fully solves the task. Injects the ruleset on session start and ships six on-demand skills.",
+  "author": "aa-blinov",
+  "icon": "icon.png",
+  "darkIcon": "icon-dark.png",
+  "category": "Code",
+  "exampleQueries": [
+    "Turn on ponytail mode for this session.",
+    "Review my diff for over-engineering.",
+    "Audit this repo for bloat."
+  ],
+  "apps": [],
+  "mcpServers": [],
+  "skills": [
+    "skills/ponytail/SKILL.md",
+    "skills/ponytail-review/SKILL.md",
+    "skills/ponytail-audit/SKILL.md",
+    "skills/ponytail-debt/SKILL.md",
+    "skills/ponytail-gain/SKILL.md",
+    "skills/ponytail-help/SKILL.md"
+  ],
+  "hooks": [
+    "hooks/hooks.json"
+  ]
+}
